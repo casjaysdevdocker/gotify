@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+# shellcheck shell=sh
+# shellcheck disable=SC2016
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+set -ex
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# script run to files
+case "$(uname -m)" in
+aarch64 | arm64)
+  PLATFORM="arm64"
+  url="https://github.com/gotify/server/releases/latest/download/gotify-linux-arm64.zip"
+  ;;
+x86_64)
+  PLATFORM="amd64"
+  url="https://github.com/gotify/server/releases/latest/download/gotify-linux-amd64.zip"
+  ;;
+*)
+  echo "Unsupported platform"
+  exit 1
+  ;;
+esac
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+curl -q -LSsf "$url" -o "/tmp/gotify.zip" && unzip /tmp/gotify.zip -d /tmp
+if [ -f "/tmp/gotify-${PLATFORM}" ]; then
+  mv -f "/tmp/gotify-${PLATFORM}" "/usr/local/bin/gotify"
+  [ -x "/usr/local/bin/gotify" ] || exit 1
+  chmod 755 "/usr/local/bin/gotify"
+fi
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+mkdir -p "/etc/gotify"
+curl -q -LSsf "https://raw.githubusercontent.com/gotify/server/master/config.example.yml" -o "/etc/gotify/config.yml"
+chmod go-rw /etc/gotify/config.yml
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+exit
