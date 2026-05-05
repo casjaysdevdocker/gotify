@@ -19,17 +19,17 @@ dockermgr update gotify
 ## Install and run container
   
 ```shell
-mkdir -p "$HOME/.local/share/srv/docker/gotify/rootfs"
+mkdir -p "$HOME/.local/share/srv/docker/gotify/volumes"
 git clone "https://github.com/dockermgr/gotify" "$HOME/.local/share/CasjaysDev/dockermgr/gotify"
-cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/gotify/rootfs/." "$HOME/.local/share/srv/docker/gotify/rootfs/"
+cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/gotify/rootfs/." "$HOME/.local/share/srv/docker/gotify/volumes/"
 docker run -d \
 --restart always \
 --privileged \
 --name casjaysdevdocker-gotify \
 --hostname gotify \
 -e TZ=${TIMEZONE:-America/New_York} \
--v $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/rootfs/data:/data:z \
--v $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/rootfs/config:/config:z \
+-v $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/volumes/data:/data:z \
+-v $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/volumes/config:/config:z \
 -p 80:80 \
 casjaysdevdocker/gotify:latest
 ```
@@ -46,8 +46,8 @@ services:
       - TZ=America/New_York
       - HOSTNAME=gotify
     volumes:
-      - $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/rootfs/data:/data:z
-      - $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/rootfs/config:/config:z
+      - $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/volumes/data:/data:z
+      - $HOME/.local/share/srv/docker/casjaysdevdocker-gotify/volumes/config:/config:z
     ports:
       - 80:80
     restart: always
